@@ -246,22 +246,26 @@ footer {
 
 /* Responsiveness */
 @media (max-width: 768px) {
-  body { padding-top: 20px; }
   header {
-    position: static;
+    position: relative;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background: rgba(255,255,255,0.95);
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
   header h1 { font-size: 1.8em; }
+  body { padding-top: 20px; }
   h2 { font-size: 1.8em; }
   h3 { font-size: 1.3em; }
   section { padding: 36px 22px; }
 
   section {
     top: 0;
-    height: auto !important;
     position: relative;
+    scroll-margin-top: 0;
+  }
+
+section:first-of-type {
+    margin-top: 36px;
   }
 }
