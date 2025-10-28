@@ -246,7 +246,7 @@ footer {
 
 /* Responsiveness */
 @media (max-width: 768px) {
-  body { padding-top: 140px; }
+  body { padding-top: 200px; }
   header h1 { font-size: 1.8em; }
   h2 { font-size: 1.8em; }
   h3 { font-size: 1.3em; }
@@ -254,7 +254,7 @@ footer {
 }
 
 @media (max-width: 480px) {
-  body { padding-top: 150px; }
+  body { padding-top: 200px; }
   header h1 { font-size: 1.5em; }
   header p { font-size: 0.85em; }
   section { padding: 28px 16px; }
