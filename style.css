@@ -257,15 +257,15 @@ footer {
   body { padding-top: 20px; }
   h2 { font-size: 1.8em; }
   h3 { font-size: 1.3em; }
-  section { padding: 36px 22px; }
 
   section {
+    padding: 36px 22px;
     top: 0;
     position: relative;
     scroll-margin-top: 0;
   }
 
-section:first-of-type {
+  section:first-of-type {
     margin-top: 36px;
   }
 }
