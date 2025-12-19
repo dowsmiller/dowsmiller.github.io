@@ -200,6 +200,13 @@ header .header-content h2::after {
   display: none;
 }
 
+header .header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
 body.hidden-language header .header-content {
   display: flex;
   align-items: center;
