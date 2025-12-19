@@ -29,11 +29,11 @@ body.hidden-language {
   background-repeat: no-repeat, no-repeat;
   background-attachment: scroll;
   transition: background-size 0.35s ease;
-  padding-top: 200px;
+  padding-top: 220px;
 }
 
 body.hidden-language section {
-  scroll-margin-top: 200px;
+  scroll-margin-top: 220px;
 }
 
 /* Image credit */
@@ -112,6 +112,10 @@ header {
   pointer-events: auto;
 }
 
+body.hidden-language header {
+  padding: 18px 24px 20px;
+}
+
 header * {
   pointer-events: auto;
 }
@@ -121,6 +125,65 @@ header h1 {
   font-weight: 700;
   letter-spacing: 0.6px;
   color: #111;
+}
+
+/* Logo image for hidden-language header */
+.hidden-language-logo {
+  display: block;
+  max-height: 137px;
+  width: auto;
+  margin: 0 auto 8px auto;
+  border-radius: 6px;
+  max-width: 100%;
+  height: auto;
+}
+
+.logo-link {
+  display: inline-block;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+body.hidden-language .header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.header-titles { text-align: left; }
+.header-titles h1 { font-size: 1.6rem; margin: 0 0 6px 0; }
+.header-titles h2 { font-size: 0.95rem; margin: 0 0 10px 0; color: #3b4450; font-weight: 400; }
+.header-titles nav { margin-top: 6px; }
+
+body.hidden-language .logo-link {
+  flex: 0 0 auto;
+}
+
+body.hidden-language .header-titles {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+body.hidden-language .header-titles nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  max-width: 100%;
+}
+
+.header-titles h1, .header-titles h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 header .header-content h2 {
@@ -154,6 +217,30 @@ header p {
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
+}
+
+/* Force side-by-side header layout for hidden-language page and hide textual headings visually */
+body.hidden-language header .header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 18px;
+  text-align: left;
+}
+
+.header-titles h1,
+.header-titles h2 {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
 }
 
 header img.headshot {
@@ -372,6 +459,33 @@ footer::before {
   body { padding-top: 20px; }
   h2 { font-size: 1.8em; }
   h3 { font-size: 1.3em; }
+
+  .logo-link { padding: 6px 8px; }
+  .hidden-language-logo { max-height: 48px; }
+
+@media (max-width: 880px) {
+  body.hidden-language .header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-titles { text-align: center; }
+  .header-titles nav { margin-top: 8px; }
+}
+
+  .hidden-language-logo { max-height: 56px; }
+
+.logo-link { display: block; }
+
+.header-meta { margin-top: 8px; }
+.header-meta .me.small {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #222;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(0,122,255,0.18);
+  margin-top: 6px;
+}
 
   body {
     background-attachment: scroll;
