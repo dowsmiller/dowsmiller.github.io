@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden Language, Hidden Signs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="hidden-language">
+
+<header>
+    <div class="header-content">
+        <div>
+            <h1>Hidden Language, Hidden Signs</h1>
+            <h2>Abbreviation in Medieval French Manuscripts: A Research Project by <a class="me" href="index.html" target="_blank">Sebastian Dows-Miller</a></h2>
+            <nav>
+                <a href="#overview">Overview</a>
+                <a href="#why-abbreviation">Why Abbreviation?</a>
+                <a href="#approach">Approach</a>
+                <a href="#questions">Research Questions</a>
+                <a href="#expected-outputs">Expected Outputs</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<section id="overview">
+    <h2>Overview</h2>
+    <p>
+        Abbreviation sculpts the appearance of the medieval page.
+        Scribes abbreviated words astonishingly frequently, and did so in even the most ornate manuscripts, yet scholarship has treated abbreviation as a hurdle for the modern reader to overcome, and not an object of analysis.
+    </p>
+    <br/>
+    <p>
+        Focusing on medieval French manuscripts, the project uses abbreviation as a lens through which to rethink how medieval scribes wrote, what choices they made, and how writing in the vernacular developed in a manuscript culture long dominated by Latin.
+        It is co-funded by the Leverhulme Trust and University College London, and runs from October 2025 to September 2028.
+    </p>
+</section>
+
+<section id="why-abbreviation">
+    <h2>Why Abbreviation?</h2>
+    <p>
+        Traditional scholarship has concentrated on cataloguing the signs used to mark abbreviation, often relying on nineteenth-century typologies that leave little room for scribal preference or historical change.
+        This has obscured what abbreviation can tell us about the priorities, habits, and training of medieval scribes, as well as about the material and intellectual contexts in which manuscripts were produced.
+    </p>
+    <br/>
+    <p>
+        My previous work has shown that identifying the characters removed through abbreviation reveals more about scribes’ priorities and preferences than the abbreviation markers they used, since an abbreviatory symbol can only be chosen after a decision has been made to abbreviate a given segment.
+    </p>
+</section>
+
+<section id="approach">
+    <h2>Approach</h2>
+    <p>
+        The project combines close engagement with medieval manuscripts with emerging digital and quantitative methods.
+        It brings together large-scale analysis made possible by recent advances in handwritten text recognition with more detailed, carefully curated data that allow for fine-grain interpretation.
+    </p>
+    <br/>
+    <p>
+        Rather than assuming a single, static system of abbreviation, the project treats abbreviation as a dynamic system that varies across time, place, text type, and individual.
+    </p>
+</section>
+
+<section id="questions">
+    <h2>Research Questions</h2>
+    <p>
+        The project asks the following questions:
+    </p>
+    <ol>
+        <li>How can we best classify abbreviation in medieval French?</li>
+        <li>What motivates the use of abbreviation in medieval French manuscripts?</li>
+        <li>How does the use of abbreviation in French manuscripts change over the Middle Ages?</li>
+        <li>How can abbreviation enhance our understanding of medieval manuscripts and their contents?</li>
+    </ol>
+</section>
+
+<section id="expected-outputs">
+    <h2>Expected Outputs and Impact</h2>
+    <p>
+        The project will generate a range of scholarly and digital outputs that reflect its combined theoretical and technical focus.
+        As the project develops, these outputs will contribute to a new way of thinking about abbreviation in medieval French manuscripts, situating it firmly within broader debates about writing practices, literacy, and manuscript culture.
+    </p>
+    <br/>
+    <p>
+        Alongside more traditional outputs, the project will produce new tools and approaches that make patterns of scribal practice visible at a scale not previously possible.
+        These methods are designed to be adaptable and reusable, opening up possibilities for future research well beyond the immediate scope of the project, including in dating manuscripts, identifying shifts in scribe, and tracing scribes across manuscripts.
+    </p>
+</section>
+
+<a class="image-credit" href="https://gallica.bnf.fr/ark:/12148/btv1b52516597g/f584.item" target="_blank" rel="noopener">
+    <span class="icon" aria-hidden="true">ⓘ</span>
+    <span class="credit-box">Paris, Bibliothèque nationale de France, fonds français, 24432, fol. 289v. <em>Image courtesy of the Bibliothèque nationale de France</em></span>
+</a>
+
+<footer>
+    <p>&copy; Sebastian Dows-Miller 2025</p>
+</footer>
+
+<script>
+    // Shrink header on scroll
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('shrink');
+        } else {
+            header.classList.remove('shrink');
+        }
+    });
+
+    // Stack sections one above the other
+    (function () {
+    const stack = document.querySelector('main.stack');
+    if (!stack) return;
+
+    const panels = Array.from(stack.querySelectorAll('.panel'));
+    const header = document.querySelector('header');
+
+    function updateLayout() {
+        const vh = window.innerHeight;
+        const headerHeight = header ? header.offsetHeight : 0;
+
+        // set CSS variable for header height so CSS sticky top works
+        document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
+
+        // make the stack container tall enough so each panel can become sticky in turn
+        // using n * 100vh is the simple approach (each panel gets viewport's worth of scroll)
+        stack.style.height = (panels.length * vh) + 'px';
+
+        // ensure each panel fits the visible area under header (in case CSS calc is imperfect across devices)
+        panels.forEach((p) => {
+        p.style.height = (vh - headerHeight) + 'px';
+        });
+
+        // assign z-index so later panels overlay earlier panels
+        // higher index => drawn above earlier ones
+        panels.forEach((p, i) => {
+        p.style.zIndex = String(i + 1); // 1,2,3...
+        });
+    }
+
+    // initial layout and on resize (debounced)
+    updateLayout();
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateLayout, 120);
+    });
+    })();
+
+    (function(){
+    const body = document.querySelector('body.hidden-language');
+    if(!body) return;
+    const base = -200;
+    const range = 300;
+    let maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+
+    function updateMaxScroll(){
+        maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    }
+
+    let ticking = false;
+    function updateBg(){
+        const scroll = window.scrollY || window.pageYOffset || 0;
+        const t = Math.min(1, Math.max(0, scroll / maxScroll));
+        const y = Math.round(base - (t - 0.5) * range);
+        body.style.setProperty('--bg-y', y + 'px');
+        ticking = false;
+    }
+
+    function onScroll(){
+        if (!ticking){
+            ticking = true;
+            requestAnimationFrame(updateBg);
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', function(){ updateMaxScroll(); onScroll(); }, {passive:true});
+
+    updateMaxScroll();
+    updateBg();
+    })();
+
+    (function(){
+    const footer = document.querySelector('footer');
+    if(!footer) return;
+    function updateFooterTop(){
+        const rect = footer.getBoundingClientRect();
+        // rect.top is distance from viewport top to footer top
+        document.documentElement.style.setProperty('--footer-top', rect.top + 'px');
+    }
+    window.addEventListener('resize', updateFooterTop);
+    window.addEventListener('scroll', updateFooterTop, {passive:true});
+    // run after load to ensure layout stabilised
+    setTimeout(updateFooterTop, 60);
+    updateFooterTop();
+    })();
+</script>
+
+</body>
+</html>

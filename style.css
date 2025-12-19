@@ -21,14 +21,87 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Specific body styling for hidden-language page */
+body.hidden-language {
+  background-image: linear-gradient(180deg, rgba(248,249,251,0.64) 0%, rgba(238,240,244,0.68) 100%), url("img/paris-bnf-fr-24432-289v.jpeg");
+  background-size: cover, 140%;
+  background-position: center, -550px var(--bg-y, -140px);
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: scroll;
+  transition: background-size 0.35s ease;
+  padding-top: 200px;
+}
+
+body.hidden-language section {
+  scroll-margin-top: 200px;
+}
+
+/* Image credit */
+.image-credit {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.6);
+  color: #111;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  z-index: 1200;
+}
+
+.image-credit .icon {
+  font-size: 18px;
+  color: rgba(0,90,180,0.95);
+}
+
+.image-credit .credit-box {
+  position: fixed;
+  right: calc(14px + 44px + 8px);
+  bottom: 14px;
+  background: rgba(255,255,255,0.96);
+  color: #111;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border-left: 4px solid rgba(0,122,255,0.25);
+  min-width: 180px;
+  max-width: min(640px, calc(100vw - 120px));
+  box-sizing: border-box;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: all 0.3s ease;
+  white-space: normal;
+  word-break: break-word;
+  font-size: 0.86rem;
+  line-height: 1.25;
+  z-index: 1250;
+}
+
+.image-credit:hover .credit-box,
+.image-credit:focus-within .credit-box {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .image-credit { display: none; }
+}
+
 /* Header */
 header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  backdrop-filter: blur(24px) saturate(220%) brightness(105%);
-  -webkit-backdrop-filter: blur(24px) saturate(220%) brightness(105%);
+  backdrop-filter: blur(24px) saturate(100%) brightness(105%);
+  -webkit-backdrop-filter: blur(24px) saturate(100%) brightness(105%);
   background: linear-gradient(120deg, rgba(255,255,255,0.5), rgba(255,255,255,0.15));
   border-bottom: 1px solid rgba(0,122,255,0.25);
   text-align: center;
@@ -48,6 +121,21 @@ header h1 {
   font-weight: 700;
   letter-spacing: 0.6px;
   color: #111;
+}
+
+header .header-content h2 {
+  font-size: 1rem;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  color: #3b4450;
+  font-weight: 400;
+  opacity: 0.95;
+  font-style: italic;
+  letter-spacing: 0.2px;
+}
+
+header .header-content h2::after {
+  display: none;
 }
 
 header p {
@@ -82,6 +170,13 @@ header img.headshot:hover {
   transform: scale(1.06);
   box-shadow: 0 12px 24px rgba(0,0,0,0.15);
   border-color: rgba(0,122,255,0.45);
+}
+
+header a.me {
+  color: #222;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(0,122,255,0.25);
+  transition: color 0.25s ease, border-bottom-color 0.25s ease;
 }
 
 /* Navigation */
@@ -220,6 +315,12 @@ ul.outputs li:hover {
   border-left-color: rgba(0,122,255,0.45);
 }
 
+ol {
+  list-style: decimal;
+  padding-left: 40px;
+  margin-bottom: 20px;
+}
+
 /* Links */
 main a, section a, footer a {
   color: #222;
@@ -240,8 +341,22 @@ footer {
   color: #666;
   margin-top: 80px;
   opacity: 0.85;
+  position: relative;
+  border-top: none;
+  padding: 20px 0;
+}
+
+footer::before {
+  content: "";
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: var(--footer-top, auto);
+  bottom: 0;
+  width: 100vw;
+  background: linear-gradient(90deg, rgba(240,245,255,0.65), rgba(255,255,255,0.9));
+  z-index: -1;
   border-top: 3px solid rgba(0,122,255,0.25);
-  padding-top: 20px;
 }
 
 /* Responsiveness */
@@ -258,6 +373,19 @@ footer {
   h2 { font-size: 1.8em; }
   h3 { font-size: 1.3em; }
 
+  body {
+    background-attachment: scroll;
+    background-position: center top;
+  }
+
+  body.hidden-language {
+    background-image: linear-gradient(180deg, rgba(248,249,251,0.92) 0%, rgba(238,240,244,0.96) 100%), url("img/paris-bnf-fr-24432-289v.jpeg");
+    background-size: cover;
+    background-position: center top;
+    background-attachment: scroll;
+    animation: none;
+  }
+
   section {
     padding: 36px 22px;
     top: 0;
@@ -267,5 +395,16 @@ footer {
 
   section:first-of-type {
     margin-top: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-credit {
+    right: 10px;
+    left: 10px;
+    bottom: 10px;
+    font-size: 0.72rem;
+    padding: 6px 8px;
+    border-radius: 6px;
   }
 }
