@@ -183,7 +183,6 @@ body.hidden-language .header-titles nav {
 .header-titles h1, .header-titles h2 {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 header .header-content h2 {
@@ -201,25 +200,6 @@ header .header-content h2::after {
   display: none;
 }
 
-header p {
-  font-size: 0.9em;
-  color: #444;
-  opacity: 0.9;
-  margin-bottom: 6px;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 18px;
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-/* Force side-by-side header layout for hidden-language page and hide textual headings visually */
 body.hidden-language header .header-content {
   display: flex;
   align-items: center;
@@ -460,10 +440,9 @@ footer::before {
   h2 { font-size: 1.8em; }
   h3 { font-size: 1.3em; }
 
-  .logo-link { padding: 6px 8px; }
-  .hidden-language-logo { max-height: 48px; }
+  .logo-link { padding: 6px 8px; display: block; }
+  .hidden-language-logo { max-height: 56px; }
 
-@media (max-width: 880px) {
   body.hidden-language .header-content {
     flex-direction: column;
     align-items: center;
@@ -471,21 +450,6 @@ footer::before {
   }
   .header-titles { text-align: center; }
   .header-titles nav { margin-top: 8px; }
-}
-
-  .hidden-language-logo { max-height: 56px; }
-
-.logo-link { display: block; }
-
-.header-meta { margin-top: 8px; }
-.header-meta .me.small {
-  display: inline-block;
-  font-size: 0.9rem;
-  color: #222;
-  text-decoration: none;
-  border-bottom: 1px dashed rgba(0,122,255,0.18);
-  margin-top: 6px;
-}
 
   body {
     background-attachment: scroll;
