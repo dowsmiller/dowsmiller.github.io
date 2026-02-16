@@ -101,7 +101,10 @@
 </a>
 
 <footer>
-    <p><a href="index.html">&copy; Sebastian Dows-Miller 2025</a></p>
+    <p><a href="index.html">&copy; Sebastian Dows-Miller <span id="current-year"></span></a></p>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
 </footer>
 
 <script>

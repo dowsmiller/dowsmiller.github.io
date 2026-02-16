@@ -492,4 +492,169 @@ footer::before {
     padding: 6px 8px;
     border-radius: 6px;
   }
+  
+  header h1 { font-size: 1.5em; }
+  nav a { padding: 8px 10px; font-size: 0.95rem; }
+  section { padding: 28px 18px; }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(180deg, #0f1419 0%, #1a1f28 100%);
+    color: #e8eaed;
+  }
+
+  body.hidden-language {
+    background-image: linear-gradient(180deg, rgba(15,20,25,0.85) 0%, rgba(26,31,40,0.90) 100%), url("img/paris-bnf-fr-24432-289v.jpeg");
+  }
+
+  /* Header */
+  header {
+    backdrop-filter: blur(24px) saturate(100%) brightness(40%);
+    -webkit-backdrop-filter: blur(24px) saturate(100%) brightness(40%);
+    background: linear-gradient(120deg, rgba(30,35,45,0.75), rgba(20,25,35,0.65));
+    border-bottom: 1px solid rgba(70,130,255,0.35);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.03);
+  }
+
+  header h1 {
+    color: #e8eaed;
+  }
+
+  header .header-content h2 {
+    color: #b8bdc4;
+  }
+
+  header img.headshot {
+    border: 2px solid rgba(70,130,255,0.4);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
+  header img.headshot:hover {
+    box-shadow: 0 12px 24px rgba(0,0,0,0.6);
+    border-color: rgba(70,130,255,0.6);
+  }
+
+  header a.me {
+    color: #d0d4d9;
+    border-bottom: 1px dashed rgba(70,130,255,0.4);
+  }
+
+  /* Logo link */
+  .logo-link {
+    background: rgba(30,35,45,0.9);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  /* Navigation */
+  nav a {
+    color: #d0d4d9;
+  }
+
+  nav a::after {
+    background: linear-gradient(90deg, rgba(70,130,255,0.5), rgba(50,170,255,0.3));
+  }
+
+  nav a:hover {
+    color: #e8eaed;
+  }
+
+  /* Image credit */
+  .image-credit {
+    background: rgba(30,35,45,0.85);
+    color: #e8eaed;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .image-credit .icon {
+    color: rgba(70,170,255,0.95);
+  }
+
+  .image-credit .credit-box {
+    background: rgba(25,30,38,0.96);
+    color: #d0d4d9;
+    border-left: 4px solid rgba(70,130,255,0.4);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+  }
+
+  /* Sections */
+  section {
+    background: rgba(25,30,38,0.75);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    border-left: 4px solid rgba(70,130,255,0.35);
+  }
+
+  section:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border-left-color: rgba(70,130,255,0.55);
+  }
+
+  /* Headings */
+  h2 {
+    color: #e8eaed;
+  }
+
+  h2::after {
+    background: linear-gradient(90deg, rgba(70,130,255,0.5), rgba(50,170,255,0.25));
+  }
+
+  h3 {
+    color: #d0d4d9;
+  }
+
+  h3::after {
+    background: linear-gradient(90deg, rgba(70,130,255,0.4), rgba(50,170,255,0.15));
+  }
+
+  /* Lists */
+  ul li {
+    color: #b8bdc4;
+  }
+
+  ul li::before {
+    color: rgba(70,130,255,0.5);
+  }
+
+  ul.outputs li {
+    color: #b8bdc4;
+    border-left: 3px solid rgba(70,130,255,0.35);
+  }
+
+  ul.outputs li:hover {
+    border-left-color: rgba(70,130,255,0.55);
+  }
+
+  /* Links */
+  main a, section a, footer a {
+    color: #b8d4ff;
+    border-bottom: 1px dashed rgba(70,130,255,0.4);
+  }
+
+  main a:hover, section a:hover, footer a:hover {
+    color: #dae8ff;
+    border-bottom-color: rgba(70,130,255,0.6);
+  }
+
+  /* Footer */
+  footer {
+    color: #888c90;
+  }
+
+  footer::before {
+    background: linear-gradient(90deg, rgba(20,25,35,0.75), rgba(25,30,38,0.9));
+    border-top: 3px solid rgba(70,130,255,0.35);
+  }
+
+  /* Mobile-specific dark mode adjustments */
+  @media (max-width: 768px) {
+    header {
+      background: rgba(25,30,38,0.95);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    body.hidden-language {
+      background-image: linear-gradient(180deg, rgba(15,20,25,0.94) 0%, rgba(26,31,40,0.96) 100%), url("img/paris-bnf-fr-24432-289v.jpeg");
+    }
+  }
 }
