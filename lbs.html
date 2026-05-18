@@ -1,0 +1,972 @@
+
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Merriweather", Georgia, serif;
+    --color-text-primary: #111;
+    --color-text-secondary: #3b4450;
+    --color-background-primary: rgba(255, 255, 255, 0.82);
+    --color-background-secondary: rgba(240, 245, 255, 0.72);
+    --color-border-primary: rgba(0, 122, 255, 0.35);
+    --color-border-secondary: rgba(0, 122, 255, 0.25);
+    --color-border-tertiary: rgba(0, 122, 255, 0.18);
+    --border-radius-md: 10px;
+    --border-radius-lg: 14px;
+  }
+
+  .plan {
+    padding: 42px 34px;
+    margin: 0 auto;
+    border-radius: 16px;
+    border-left: 4px solid var(--color-border-secondary);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    font-family: var(--font-sans);
+    line-height: 1.7;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-left-color 0.35s ease;
+  }
+
+  .plan.guided-active {
+    padding-bottom: 120px;
+  }
+
+  .plan:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-left-color: rgba(0, 122, 255, 0.45);
+  }
+
+  .phase-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .workout-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    padding: 10px 12px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary);
+  }
+
+  .workout-btn {
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--color-text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .workout-btn:hover {
+    background: rgba(0, 122, 255, 0.09);
+    border-color: var(--color-border-primary);
+    transform: translateY(-1px);
+  }
+
+  .workout-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+  }
+
+  .workout-btn.primary {
+    background: linear-gradient(120deg, rgba(0, 122, 255, 0.14), rgba(0, 200, 255, 0.08));
+    border-color: var(--color-border-primary);
+  }
+
+  .workout-status {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-left: auto;
+  }
+
+  .guided-nav {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid var(--color-border-secondary);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+  }
+
+  .guided-nav.show {
+    display: flex;
+  }
+
+  .block-cue {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    z-index: 1250;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border-primary);
+    background: rgba(0, 122, 255, 0.12);
+    color: var(--color-text-primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .block-cue.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .guided-arrow {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border-secondary);
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--color-text-primary);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .guided-arrow:hover {
+    transform: translateY(-1px);
+    background: rgba(0, 122, 255, 0.1);
+    border-color: var(--color-border-primary);
+  }
+
+  .guided-arrow:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .tab {
+    position: relative;
+    padding: 6px 14px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: rgba(255, 255, 255, 0.45);
+    color: #222;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .tab:hover {
+    background: rgba(0, 122, 255, 0.08);
+    border-color: var(--color-border-primary);
+    transform: translateY(-1px);
+  }
+
+  .tab.active {
+    background: linear-gradient(120deg, rgba(0, 122, 255, 0.14), rgba(0, 200, 255, 0.08));
+    color: #111;
+    border-color: var(--color-border-primary);
+    font-weight: 600;
+  }
+
+  .phase-label {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+    padding: 10px 12px;
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    line-height: 1.55;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2f3a47;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 1.35rem 0 0.6rem;
+  }
+
+  .exercise-card {
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+  }
+
+  .exercise-card:hover {
+    border-color: var(--color-border-secondary);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.07);
+    transform: translateY(-1px);
+  }
+
+  .exercise-card.guided-current {
+    border-color: var(--color-border-primary);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.18), 0 8px 18px rgba(0, 0, 0, 0.08);
+  }
+
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ex-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-eccentric { background: #eeedfe; color: #3c3489; }
+  .badge-glute { background: #e1f5ee; color: #085041; }
+  .badge-stability { background: #faeeda; color: #633806; }
+  .badge-back { background: #faece7; color: #712b13; }
+  .badge-calf { background: #eaf3de; color: #27500a; }
+
+  .ex-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    flex: 1;
+  }
+
+  .ex-prescription {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ex-detail {
+    display: none;
+    margin-top: 10px;
+    border-top: 1px solid var(--color-border-tertiary);
+    padding-top: 10px;
+  }
+
+  .ex-detail.open {
+    display: block;
+  }
+
+  .ex-detail p {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin: 0 0 6px;
+    line-height: 1.6;
+  }
+
+  .ex-detail p strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .chevron {
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-text-secondary);
+    transition: transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-style: normal;
+  }
+
+  .chevron::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid currentColor;
+  }
+
+  .chevron.open {
+    transform: rotate(180deg);
+  }
+
+  .timing-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+    margin-top: 1.6rem;
+  }
+
+  .timing-cell {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .timing-num {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .timing-lbl {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .plan {
+      padding: 30px 20px;
+    }
+
+    .plan.guided-active {
+      padding-bottom: 140px;
+    }
+
+    .workout-status {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .guided-nav {
+      width: calc(100vw - 24px);
+      max-width: 390px;
+      justify-content: space-between;
+      padding: 8px 14px;
+    }
+
+    .guided-arrow {
+      width: 60px;
+      height: 60px;
+      font-size: 26px;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-text-primary: #e8eaed;
+      --color-text-secondary: #b8bdc4;
+      --color-background-primary: rgba(25, 30, 38, 0.82);
+      --color-background-secondary: rgba(30, 35, 45, 0.76);
+      --color-border-primary: rgba(70, 130, 255, 0.45);
+      --color-border-secondary: rgba(70, 130, 255, 0.35);
+      --color-border-tertiary: rgba(70, 130, 255, 0.26);
+    }
+
+    .plan {
+      background: rgba(25, 30, 38, 0.75);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .tab {
+      background: rgba(30, 35, 45, 0.7);
+      color: #d0d4d9;
+    }
+
+    .tab.active {
+      background: linear-gradient(120deg, rgba(70, 130, 255, 0.2), rgba(50, 170, 255, 0.1));
+      color: #e8eaed;
+    }
+
+    .workout-btn {
+      background: rgba(30, 35, 45, 0.75);
+      color: #e8eaed;
+    }
+
+    .workout-btn.primary {
+      background: linear-gradient(120deg, rgba(70, 130, 255, 0.24), rgba(50, 170, 255, 0.12));
+    }
+
+    .guided-nav {
+      background: rgba(25, 30, 38, 0.85);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .guided-arrow {
+      background: rgba(30, 35, 45, 0.95);
+      color: #e8eaed;
+    }
+
+    .block-cue {
+      background: rgba(70, 130, 255, 0.2);
+      color: #e8eaed;
+      border-color: rgba(70, 130, 255, 0.45);
+    }
+  }
+
+</style>
+
+<div class="plan">
+  <h2 class="sr-only">GR20 lower body workout plan &mdash; exercises by training phase with sets, reps, and coaching notes</h2>
+
+  <div class="phase-tabs" role="tablist">
+    <button class="tab active" onclick="showPhase(0)" role="tab">Phase 1 &mdash; foundation (weeks 1&ndash;4)</button>
+    <button class="tab" onclick="showPhase(1)" role="tab">Phase 2 &mdash; load (weeks 5&ndash;10)</button>
+    <button class="tab" onclick="showPhase(2)" role="tab">Phase 3 &mdash; taper (final 2&ndash;3 weeks)</button>
+  </div>
+
+  <div class="workout-controls">
+    <button id="start-workout" class="workout-btn primary" type="button" onclick="startWorkout()">Start workout</button>
+    <button id="next-step" class="workout-btn" type="button" onclick="nextStep()" disabled>Next exercise</button>
+    <button id="prev-step" class="workout-btn" type="button" onclick="prevStep()" disabled>Previous exercise</button>
+    <button id="end-workout" class="workout-btn" type="button" onclick="endWorkout()" disabled>End workout</button>
+    <span id="workout-status" class="workout-status">Guided mode off</span>
+  </div>
+
+  <div id="guided-nav" class="guided-nav" aria-hidden="true">
+    <button id="prev-fab" class="guided-arrow" type="button" onclick="prevStep()" aria-label="Previous exercise">&larr;</button>
+    <button id="next-fab" class="guided-arrow" type="button" onclick="nextStep()" aria-label="Next exercise">&rarr;</button>
+  </div>
+
+  <div id="block-cue" class="block-cue" aria-hidden="true"></div>
+
+  <div id="phase-0">
+    <p class="phase-label">Build movement patterns, wake up stabilisers, and establish the habit. All bodyweight or lightest dumbbells. Focus entirely on form &mdash; especially the hinge pattern and slow eccentric on step-downs.</p>
+
+    <div class="section-title">Warm-up  &middot;  ~15 min</div>
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Hip circle + leg swings</span>
+        <span class="ex-badge badge-stability">mobility</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>2 &times; 10 each direction</span><span>No rest</span></div>
+      <div class="ex-detail"><p>Stand holding the bench. Swing each leg forward/back 10 times, then side to side 10 times. Follow with 10 hip circles each direction. Loosens hip flexors and glutes before loading.</p></div>
+    </div>
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Glute bridge</span>
+        <span class="ex-badge badge-glute">glute</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>2 &times; 15 reps</span><span>Rest 60 s</span></div>
+      <div class="ex-detail"><p>Lie on your back, feet flat, knees bent. Drive hips up by squeezing glutes &mdash; not by arching your lower back. Hold 1 second at the top. <strong>Back safety:</strong> the movement is pure hip extension; your lumbar spine stays neutral throughout. If you feel it in your lower back, you're either overextending or your feet are too close.</p></div>
+    </div>
+
+    <div class="section-title">Main block  &middot;  ~55 min</div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Bench step-up with slow step-down</span>
+        <span class="ex-badge badge-eccentric">eccentric</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 10 each leg</span><span>Rest 90 s</span><span>Bodyweight</span></div>
+      <div class="ex-detail">
+        <p><strong>Why it matters:</strong> the slow step-down (3&ndash;4 seconds) is the most important part &mdash; it trains the eccentric quad control that prevents knee pain on descents.</p>
+        <p><strong>Form:</strong> Plant one foot fully on the bench. Drive up through the heel. At the top, stand tall. Then lower the free leg s-l-o-w-l-y back to the floor. Do not let your torso pitch forward. Keep chest tall. Alternate legs each rep or complete all reps on one side.</p>
+        <p><strong>Back note:</strong> holding dumbbells at your sides (not overhead) keeps spinal load minimal. Stay upright &mdash; forward lean loads the lumbar.</p>
+      </div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Reverse lunge</span>
+        <span class="ex-badge badge-eccentric">eccentric</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 10 each leg</span><span>Rest 90 s</span><span>Bodyweight</span></div>
+      <div class="ex-detail">
+        <p>Step backward (not forward) &mdash; this loads the front knee far less aggressively than a forward lunge. Lower until the back knee hovers just above the floor. Front shin stays roughly vertical. Drive back up through the front heel.</p>
+        <p><strong>Back note:</strong> keep your torso upright. A slight forward lean is fine, but don't hinge at the waist. Hands on hips or held at sides.</p>
+      </div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Single-leg glute bridge</span>
+        <span class="ex-badge badge-glute">glute</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 10 each leg</span><span>Rest 60 s</span></div>
+      <div class="ex-detail">
+        <p>Same as the warm-up bridge, but extend one leg straight. This isolates each glute independently and exposes any side-to-side strength difference &mdash; common and worth addressing before adding pack weight. The extended leg shouldn't touch the floor. Hips stay level.</p>
+      </div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Terminal knee extension (isometric)</span>
+        <span class="ex-badge badge-stability">stability</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 15 each leg</span><span>Rest 45 s</span></div>
+      <div class="ex-detail">
+        <p>Stand facing the bench, hands resting on it lightly. Slightly bend the working knee (about 20&ndash;30&deg;). From that position, squeeze the quad hard to "lock" the knee straight &mdash; hold 2 seconds, release. This activates the VMO (inner quad), which is the muscle that most directly controls kneecap tracking and is often undertrained in people with downhill knee pain. Low load, high value.</p>
+      </div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Seated calf raise</span>
+        <span class="ex-badge badge-calf">calf</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 20 each leg</span><span>Rest 60 s</span><span>5 kg dumbbell on thigh</span></div>
+      <div class="ex-detail">
+        <p>Sit on the bench, dumbbell resting on the lower thigh just above the knee. Raise the heel as high as possible, pause 1 second, lower slowly (3 seconds down). The seated position targets the soleus &mdash; the deeper calf muscle that absorbs the bulk of braking force on descents and is underworked by standing calf raises alone.</p>
+      </div>
+    </div>
+
+    <div class="section-title">Cool-down  &middot;  ~15 min</div>
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">90/90 hip stretch + standing quad stretch</span>
+        <span class="ex-badge badge-stability">mobility</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>60 s each position</span></div>
+      <div class="ex-detail"><p>90/90: sit on the floor with both knees bent at 90&deg;, one in front, one to the side. Sit tall and gently lean over the front shin. Targets the hip external rotators that tighten under pack load. Standing quad: hold the bench, pull one heel toward your glute, keep knees together. 60 seconds each side, twice through.</p></div>
+    </div>
+  </div>
+
+  <div id="phase-1" style="display:none">
+    <p class="phase-label">Add load progressively. Introduce single-leg Romanian deadlifts and lateral step-ups. Begin with 5 kg, move to 8 kg when you can complete all reps with clean form and no back discomfort.</p>
+
+    <div class="section-title">Warm-up  &middot;  ~15 min</div>
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Hip circles + banded lateral walk</span>
+        <span class="ex-badge badge-stability">stability</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>2 &times; 15 steps each direction</span></div>
+      <div class="ex-detail"><p>If you don't have a resistance band, do lateral step-ups instead (step sideways onto the bench). Targets glute medius &mdash; the hip abductor that keeps the knee from caving inward on each downhill step. This is directly relevant to your knee issue.</p></div>
+    </div>
+
+    <div class="section-title">Main block  &middot;  ~60 min</div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Weighted step-up with slow step-down</span>
+        <span class="ex-badge badge-eccentric">eccentric</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>4 &times; 10 each leg</span><span>Rest 90 s</span><span>5 &rarr; 8 kg dumbbells</span></div>
+      <div class="ex-detail"><p>Same movement as phase 1, now with dumbbells held at your sides. The 15 kg pack you'll carry is distributed across your whole body; holding 5&ndash;8 kg per hand while stepping mimics that load at the legs without compressing the spine. Step-down still 3&ndash;4 seconds. This is your most important exercise.</p></div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Single-leg Romanian deadlift</span>
+        <span class="ex-badge badge-back">hamstring/glute</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 8 each leg</span><span>Rest 90 s</span><span>5 &rarr; 8 kg dumbbell</span></div>
+      <div class="ex-detail">
+        <p>Hold one dumbbell in the opposite hand to the working leg (e.g. right leg, left hand). Hinge at the hip &mdash; push the hip crease backward, keeping a neutral spine, letting the dumbbell track close to the standing leg. The non-working leg extends behind you for balance. Feel the hamstring stretch, then drive the hip forward to stand.</p>
+        <p><strong>Back safety:</strong> this is a hip hinge, not a back bend. If you feel your lower back rounding, reduce the range of motion. Use the bench nearby for a light balance touch if needed. Start with 5 kg and only progress to 8 kg when you're confident in the pattern.</p>
+      </div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Reverse lunge with dumbbells</span>
+        <span class="ex-badge badge-eccentric">eccentric</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 12 each leg</span><span>Rest 90 s</span><span>5 &rarr; 8 kg each hand</span></div>
+      <div class="ex-detail"><p>Progress from bodyweight with added load. Keep the dumbbells at your sides &mdash; never overhead. Torso stays upright. If you feel any lower back twinge, drop back to bodyweight and focus on maintaining a braced core throughout the movement.</p></div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Lateral step-up (sideways onto bench)</span>
+        <span class="ex-badge badge-stability">stability</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 10 each leg</span><span>Rest 60 s</span><span>Bodyweight or 5 kg</span></div>
+      <div class="ex-detail"><p>Stand beside the bench. Place the near foot fully on the bench sideways, then drive up through that foot to bring both feet to bench level. Step back down with control. This loads the glute medius &mdash; critical for knee stability on uneven trail terrain. Keep the knee tracking over the second toe throughout.</p></div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Terminal knee extension + seated calf raise</span>
+        <span class="ex-badge badge-stability">stability</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 15 / 3 &times; 20</span><span>Superset &mdash; rest 60 s between pairs</span></div>
+      <div class="ex-detail"><p>Pair these as a superset: TKEs then straight into seated calf raises. Both are low-load, joint-focused movements &mdash; pairing them saves time without fatiguing the main movers. Increase calf raise dumbbell to 8 kg when 5 kg feels easy.</p></div>
+    </div>
+
+    <div class="section-title">Cool-down  &middot;  ~15 min</div>
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Pigeon pose + calf/Achilles stretch</span>
+        <span class="ex-badge badge-stability">mobility</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>90 s each side</span></div>
+      <div class="ex-detail"><p>Pigeon: from all fours, bring one shin forward and lower the back leg straight. This is the deepest hip external rotator stretch available without equipment &mdash; the GR20's rocky scrambles will test these muscles constantly. Calf stretch: step one foot back, press the heel flat, hold 60 s for gastrocnemius; then slightly bend the knee and hold 60 s more for the soleus.</p></div>
+    </div>
+  </div>
+
+  <div id="phase-2" style="display:none">
+    <p class="phase-label">Reduce volume, maintain intensity. The goal is to arrive at the trailhead feeling fresh, not fatigued. Two sessions per week maximum. Keep weights the same as peak phase 2 &mdash; no need to push harder now.</p>
+
+    <div class="section-title">Condensed session  &middot;  ~50 min total</div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Weighted step-up with slow step-down</span>
+        <span class="ex-badge badge-eccentric">eccentric</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>3 &times; 8 each leg</span><span>Rest 90 s</span><span>8 kg dumbbells</span></div>
+      <div class="ex-detail"><p>Reduce sets by one but keep weight the same. You're maintaining the neuromuscular pattern, not building new capacity. Step-down still slow and controlled.</p></div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Single-leg Romanian deadlift</span>
+        <span class="ex-badge badge-back">hamstring/glute</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>2 &times; 8 each leg</span><span>Rest 90 s</span><span>8 kg</span></div>
+      <div class="ex-detail"><p>Maintain the pattern. If anything feels off in your lower back, drop to 5 kg or skip entirely &mdash; protecting your back in the final weeks before the trek is the priority.</p></div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Lateral step-up + TKE superset</span>
+        <span class="ex-badge badge-stability">stability</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>2 &times; 10 / 2 &times; 15</span><span>Rest 60 s</span></div>
+      <div class="ex-detail"><p>Keep both in as they directly address your knee concern. Low fatigue cost, high maintenance value.</p></div>
+    </div>
+
+    <div class="exercise-card" onclick="toggle(this)">
+      <div class="ex-header">
+        <span class="ex-name">Seated calf raise</span>
+        <span class="ex-badge badge-calf">calf</span>
+        <i class="chevron" aria-hidden="true"></i>
+      </div>
+      <div class="ex-prescription"><span>2 &times; 20 each leg</span><span>Rest 60 s</span><span>8 kg</span></div>
+      <div class="ex-detail"><p>Keep this in throughout the taper &mdash; calf and Achilles conditioning is one of the last things to show up as a problem on a long trek, so it's worth maintaining right up to departure.</p></div>
+    </div>
+
+    <p class="phase-label" style="margin-top:1.5rem">In the final week before the trek: no strength sessions. Walk with a loaded pack on hilly ground if possible. Sleep, eat well, and let the adaptations consolidate.</p>
+  </div>
+
+  <div class="timing-bar">
+    <div class="timing-cell"><div class="timing-num">3&times;</div><div class="timing-lbl">Sessions per week</div></div>
+    <div class="timing-cell"><div class="timing-num">~90</div><div class="timing-lbl">Minutes per session</div></div>
+    <div class="timing-cell"><div class="timing-num">10+</div><div class="timing-lbl">Weeks of training</div></div>
+    <div class="timing-cell"><div class="timing-num">48 h</div><div class="timing-lbl">Rest between sessions</div></div>
+  </div>
+</div>
+
+<script>
+const guided = {
+  active: false,
+  steps: [],
+  index: 0,
+  currentCard: null,
+  cueTimer: null
+};
+
+function getPlanEl() {
+  return document.querySelector('.plan');
+}
+
+function mountFloatingUiToBody() {
+  const nav = document.getElementById('guided-nav');
+  if (nav && nav.parentElement !== document.body) {
+    document.body.appendChild(nav);
+  }
+
+  const cue = document.getElementById('block-cue');
+  if (cue && cue.parentElement !== document.body) {
+    document.body.appendChild(cue);
+  }
+}
+
+function showBlockCue(text) {
+  const cue = document.getElementById('block-cue');
+  if (!cue) return;
+
+  if (guided.cueTimer) {
+    clearTimeout(guided.cueTimer);
+    guided.cueTimer = null;
+  }
+
+  cue.textContent = 'New block: ' + text;
+  cue.classList.add('show');
+  cue.setAttribute('aria-hidden', 'false');
+
+  guided.cueTimer = setTimeout(() => {
+    cue.classList.remove('show');
+    cue.setAttribute('aria-hidden', 'true');
+    guided.cueTimer = null;
+  }, 1800);
+}
+
+function isLastGuidedStep() {
+  return guided.active && guided.steps.length > 0 && guided.index >= guided.steps.length - 1;
+}
+
+function closeAllDetails() {
+  document.querySelectorAll('.ex-detail.open').forEach((detail) => detail.classList.remove('open'));
+  document.querySelectorAll('.chevron.open').forEach((chevron) => chevron.classList.remove('open'));
+}
+
+function getCurrentPhaseIndex() {
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  return Math.max(0, tabs.findIndex(t => t.classList.contains('active')));
+}
+
+function getBlockRounds(title) {
+  const t = (title || '').toLowerCase();
+  if (t.includes('warm-up')) return 2;
+  if (t.includes('main block')) return 3;
+  if (t.includes('condensed session')) return 2;
+  if (t.includes('cool-down')) return 1;
+  return 1;
+}
+
+function buildGuidedSteps(phaseIndex) {
+  const phase = document.getElementById('phase-' + phaseIndex);
+  if (!phase) return [];
+
+  const blocks = [];
+  let currentBlock = null;
+
+  Array.from(phase.children).forEach((el) => {
+    if (el.classList && el.classList.contains('section-title')) {
+      const title = el.textContent.trim();
+      currentBlock = {
+        title,
+        rounds: getBlockRounds(title),
+        cards: []
+      };
+      blocks.push(currentBlock);
+      return;
+    }
+
+    if (el.classList && el.classList.contains('exercise-card') && currentBlock) {
+      currentBlock.cards.push(el);
+    }
+  });
+
+  const steps = [];
+  blocks.forEach((block) => {
+    for (let round = 1; round <= block.rounds; round += 1) {
+      block.cards.forEach((card, exIndex) => {
+        steps.push({
+          card,
+          blockTitle: block.title,
+          round,
+          rounds: block.rounds,
+          exercise: exIndex + 1,
+          exerciseTotal: block.cards.length
+        });
+      });
+    }
+  });
+
+  return steps;
+}
+
+function setGuidedStatus(text) {
+  const status = document.getElementById('workout-status');
+  if (status) status.textContent = text;
+}
+
+function updateGuidedButtons() {
+  const startBtn = document.getElementById('start-workout');
+  const nextBtn = document.getElementById('next-step');
+  const prevBtn = document.getElementById('prev-step');
+  const endBtn = document.getElementById('end-workout');
+  const prevFab = document.getElementById('prev-fab');
+  const nextFab = document.getElementById('next-fab');
+  const nav = document.getElementById('guided-nav');
+
+  const hasPrev = guided.active && guided.index > 0;
+  const lastStep = isLastGuidedStep();
+  const hasNext = guided.active;
+
+  if (startBtn) startBtn.disabled = guided.active;
+  if (nextBtn) {
+    nextBtn.disabled = !guided.active || !hasNext;
+    nextBtn.innerHTML = lastStep ? 'Finish workout &#x1F3C1;' : 'Next exercise';
+  }
+  if (prevBtn) prevBtn.disabled = !guided.active || !hasPrev;
+  if (endBtn) endBtn.disabled = !guided.active;
+  if (prevFab) prevFab.disabled = !hasPrev;
+  if (nextFab) {
+    nextFab.disabled = !hasNext;
+    nextFab.innerHTML = lastStep ? '&#x1F3C1;' : '&rarr;';
+    nextFab.setAttribute('aria-label', lastStep ? 'Finish workout' : 'Next exercise');
+  }
+  if (nav) {
+    nav.classList.toggle('show', guided.active);
+    nav.setAttribute('aria-hidden', guided.active ? 'false' : 'true');
+  }
+}
+
+function clearGuidedFocus() {
+  if (guided.currentCard) {
+    guided.currentCard.classList.remove('guided-current');
+    guided.currentCard = null;
+  }
+}
+
+function openCard(card) {
+  const detail = card.querySelector('.ex-detail');
+  const chevron = card.querySelector('.chevron');
+  if (detail && !detail.classList.contains('open')) detail.classList.add('open');
+  if (chevron) chevron.classList.add('open');
+}
+
+function renderGuidedStep() {
+  if (!guided.active) return;
+
+  if (guided.index >= guided.steps.length) {
+    setGuidedStatus('Workout complete');
+    endWorkout();
+    return;
+  }
+
+  if (guided.index < 0) guided.index = 0;
+
+  clearGuidedFocus();
+  closeAllDetails();
+
+  const step = guided.steps[guided.index];
+  const total = guided.steps.length;
+  const prev = guided.index > 0 ? guided.steps[guided.index - 1] : null;
+
+  if (!prev || prev.blockTitle !== step.blockTitle) {
+    showBlockCue(step.blockTitle);
+  }
+
+  guided.currentCard = step.card;
+  step.card.classList.add('guided-current');
+  openCard(step.card);
+  step.card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  setGuidedStatus(
+    step.blockTitle + '  |  Round ' + step.round + '/' + step.rounds + '  |  Exercise ' +
+    step.exercise + '/' + step.exerciseTotal + '  |  Step ' + (guided.index + 1) + '/' + total
+  );
+
+  updateGuidedButtons();
+}
+
+function startWorkout() {
+  const phaseIndex = getCurrentPhaseIndex();
+  guided.steps = buildGuidedSteps(phaseIndex);
+  guided.index = 0;
+
+  if (!guided.steps.length) {
+    setGuidedStatus('No exercises found for this phase');
+    return;
+  }
+
+  guided.active = true;
+  const plan = getPlanEl();
+  if (plan) plan.classList.add('guided-active');
+  updateGuidedButtons();
+  renderGuidedStep();
+}
+
+function nextStep() {
+  if (!guided.active) return;
+  if (guided.index >= guided.steps.length - 1) {
+    endWorkout();
+    return;
+  }
+  guided.index += 1;
+  renderGuidedStep();
+}
+
+function prevStep() {
+  if (!guided.active) return;
+  if (guided.index <= 0) return;
+  guided.index -= 1;
+  renderGuidedStep();
+}
+
+function endWorkout() {
+  clearGuidedFocus();
+  closeAllDetails();
+  if (guided.cueTimer) {
+    clearTimeout(guided.cueTimer);
+    guided.cueTimer = null;
+  }
+  const cue = document.getElementById('block-cue');
+  if (cue) {
+    cue.classList.remove('show');
+    cue.setAttribute('aria-hidden', 'true');
+  }
+  guided.active = false;
+  guided.steps = [];
+  guided.index = 0;
+  const plan = getPlanEl();
+  if (plan) plan.classList.remove('guided-active');
+  updateGuidedButtons();
+  setGuidedStatus('Guided mode off');
+}
+
+function showPhase(i) {
+  if (guided.active) endWorkout();
+  [0,1,2].forEach(n => {
+    document.getElementById('phase-'+n).style.display = n===i ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((t,n) => t.classList.toggle('active', n===i));
+}
+function toggle(card) {
+  if (guided.active && guided.currentCard === card) {
+    nextStep();
+    return;
+  }
+  const detail = card.querySelector('.ex-detail');
+  const chevron = card.querySelector('.chevron');
+  const open = detail.classList.toggle('open');
+  chevron.classList.toggle('open', open);
+}
+
+mountFloatingUiToBody();
+updateGuidedButtons();
+</script>
