@@ -356,29 +356,188 @@
 
   @media (max-width: 768px) {
     .plan {
-      padding: 30px 20px;
+      padding: 18px 14px;
+      border-left-width: 3px;
+      border-radius: 14px;
+      font-size: 16px;
+      line-height: 1.8;
     }
 
     .plan.guided-active {
-      padding-bottom: 140px;
+      padding-bottom: 170px;
+    }
+
+    .plan:hover {
+      transform: none;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .phase-tabs {
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      line-height: 1.35;
+      text-align: left;
+    }
+
+    .workout-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 12px;
+      margin-bottom: 0.9rem;
+    }
+
+    .workout-btn {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      min-height: 48px;
+      text-align: center;
     }
 
     .workout-status {
       margin-left: 0;
       width: 100%;
+      font-size: 13px;
+      line-height: 1.4;
+      text-align: center;
     }
 
     .guided-nav {
-      width: calc(100vw - 24px);
-      max-width: 390px;
+      width: calc(100vw - 16px);
+      max-width: 430px;
       justify-content: space-between;
-      padding: 8px 14px;
+      padding: 10px 12px;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    }
+
+    .guided-arrow {
+      width: 64px;
+      height: 64px;
+      font-size: 28px;
+    }
+
+    .block-cue {
+      width: calc(100vw - 18px);
+      max-width: 430px;
+      top: calc(env(safe-area-inset-top, 0px) + 10px);
+      padding: 10px 12px;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .section-title {
+      font-size: 14px;
+      margin: 1.1rem 0 0.5rem;
+      letter-spacing: 0.04em;
+    }
+
+    .exercise-card {
+      padding: 14px 14px 13px;
+      margin-bottom: 10px;
+      border-radius: 16px;
+    }
+
+    .exercise-card:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .ex-header {
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .ex-name {
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .ex-badge {
+      font-size: 10px;
+      padding: 3px 7px;
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+
+    .ex-prescription {
+      margin-top: 8px;
+      gap: 8px;
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .ex-detail {
+      margin-top: 12px;
+      padding-top: 12px;
+    }
+
+    .ex-detail p {
+      font-size: 15px;
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+
+    .timing-bar {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 1.2rem;
+    }
+
+    .timing-cell {
+      padding: 12px 10px;
+      min-height: 78px;
+    }
+
+    .timing-num {
+      font-size: 20px;
+    }
+
+    .timing-lbl {
+      font-size: 12px;
+      line-height: 1.25;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .plan {
+      padding: 14px 12px;
+      font-size: 16px;
+    }
+
+    .guided-nav {
+      width: calc(100vw - 12px);
+      padding: 10px 10px;
     }
 
     .guided-arrow {
       width: 60px;
       height: 60px;
       font-size: 26px;
+    }
+
+    .block-cue {
+      width: calc(100vw - 14px);
+      font-size: 12px;
+    }
+
+    .phase-label {
+      font-size: 14px;
+      padding: 12px 12px;
+    }
+
+    .timing-bar {
+      grid-template-columns: 1fr;
     }
   }
 
