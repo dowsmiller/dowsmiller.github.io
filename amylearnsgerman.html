@@ -320,6 +320,7 @@
     let card, cardFront, cardBack, articleBtns, wordRow, wordInput;
     let submitBtn, skipBtn, resetBtn, modeChk, hdrScore, progressEl, gdprBar, gdprOk;
     let state;
+    let renderToken = 0;
 
     // ── Core navigation ───────────────────────────────────────────────────────
     function currentWord() {
@@ -397,6 +398,7 @@
     }
 
     function render() {
+      renderToken++;
       const ms = state[state.mode];
       if (ms.pos >= ms.queue.length) { checkCompletion(); return; }
       updateScore();
@@ -415,6 +417,7 @@
       const ms  = state.gender;
       const btn = e.currentTarget;
       const w   = currentWord();
+      const token = renderToken;
 
       if (isCorrectArticle(w, btn.dataset.article)) {
         // Disable all buttons immediately to prevent double-fire, then mark correct one
@@ -423,11 +426,17 @@
         btn.classList.add('correct');
         markCorrect(ms, w.id);
         saveState();
-        setTimeout(advance, 700);
+        setTimeout(() => {
+          if (token !== renderToken) return;
+          advance();
+        }, 700);
       } else {
         btn.classList.add('wrong');
         markWrong(ms, w.id);
-        setTimeout(() => btn.classList.add('disabled'), 400);
+        setTimeout(() => {
+          if (token !== renderToken) return;
+          btn.classList.add('disabled');
+        }, 400);
       }
     }
 
@@ -500,6 +509,7 @@
       const w         = currentWord();
       const chosenBtn = document.querySelector('.art-btn.selected');
       const input     = wordInput.value.trim();
+      const token     = renderToken;
 
       if (!chosenBtn) { shakeEl(articleBtns); return; }
 
@@ -516,7 +526,10 @@
         wordInput.classList.add('input-correct');
         markCorrect(ms, w.id);
         saveState();
-        setTimeout(advance, 700);
+        setTimeout(() => {
+          if (token !== renderToken) return;
+          advance();
+        }, 700);
       } else {
         markWrong(ms, w.id);
         if (!wordOk) {
@@ -526,7 +539,10 @@
         }
         if (!artOk) {
           chosenBtn.classList.add('wrong');
-          setTimeout(() => chosenBtn.classList.add('disabled'), 400);
+          setTimeout(() => {
+            if (token !== renderToken) return;
+            chosenBtn.classList.add('disabled');
+          }, 400);
         }
       }
     }
