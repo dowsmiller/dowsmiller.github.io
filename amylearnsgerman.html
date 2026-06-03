@@ -9,6 +9,7 @@
   <title>Amy Learns German</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
     html, body { height: 100%; overflow: hidden; }
     body {
       background: linear-gradient(180deg, #f8f9fb 0%, #eef0f4 100%);
@@ -53,7 +54,6 @@
       width: 18px; height: 18px; border-radius: 50%; background: #fff;
       transition: transform 0.25s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
-    #mode-chk:checked ~ .track                { background: rgba(0,122,255,0.8); }
     #mode-chk:checked ~ .track::after         { transform: translateX(18px); }
 
     /* ── Main ────────────────────────────────────────────────────────────── */
