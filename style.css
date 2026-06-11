@@ -350,7 +350,7 @@ h3::after {
 
 /* Lists */
 ul li::before,
-ul.outputs li::before {
+ul.left_border li::before {
     content: none;
 }
 
@@ -363,18 +363,18 @@ ul li {
   margin-bottom: 14px;
   line-height: 1.6;
   color: #333;
-  padding-left: 0;
+  padding-left: 18px;
   position: relative;
 }
 
 ul li::before {
   content: "•";
-  color: rgba(0,122,255,0.4); /* accent bullet */
+  color: rgba(0,122,255,0.4);
   position: absolute;
   left: 0;
 }
 
-ul.outputs li {
+ul.left_border li {
   margin-bottom: 18px;
   line-height: 1.6;
   font-size: 1em;
@@ -384,7 +384,7 @@ ul.outputs li {
   transition: all 0.25s ease;
 }
 
-ul.outputs li:hover {
+ul.left_border li:hover {
   transform: translateX(3px);
   border-left-color: rgba(0,122,255,0.45);
 }
@@ -616,12 +616,12 @@ footer::before {
     color: rgba(70,130,255,0.5);
   }
 
-  ul.outputs li {
+  ul.left_border li {
     color: #b8bdc4;
     border-left: 3px solid rgba(70,130,255,0.35);
   }
 
-  ul.outputs li:hover {
+  ul.left_border li:hover {
     border-left-color: rgba(70,130,255,0.55);
   }
 
