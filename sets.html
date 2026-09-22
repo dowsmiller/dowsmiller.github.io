@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Home Strength Reset — Set List</title>
+
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Merriweather", Georgia, serif;
+    --color-text-primary: #111;
+    --color-text-secondary: #3b4450;
+    --color-background-primary: rgba(255, 255, 255, 0.82);
+    --color-background-secondary: rgba(240, 245, 255, 0.72);
+    --color-border-primary: rgba(0, 122, 255, 0.35);
+    --color-border-secondary: rgba(0, 122, 255, 0.25);
+    --color-border-tertiary: rgba(0, 122, 255, 0.18);
+    --border-radius-md: 10px;
+    --border-radius-lg: 14px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    padding: 24px;
+    box-sizing: border-box;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f8f9fb 0%, #eef0f4 100%);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .plan {
+    padding: 42px 34px;
+    margin: 0 auto;
+    max-width: 720px;
+    border-radius: 16px;
+    border-left: 4px solid var(--color-border-secondary);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    font-family: var(--font-sans);
+    line-height: 1.7;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-left-color 0.35s ease;
+  }
+
+  .plan.guided-active { padding-bottom: 120px; }
+
+  .plan:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-left-color: rgba(0, 122, 255, 0.45);
+  }
+
+  .session-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .workout-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    padding: 10px 12px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary);
+  }
+
+  .workout-btn {
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--color-text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .workout-btn:hover {
+    background: rgba(0, 122, 255, 0.09);
+    border-color: var(--color-border-primary);
+    transform: translateY(-1px);
+  }
+
+  .workout-btn:disabled { cursor: not-allowed; opacity: 0.55; transform: none; }
+
+  .workout-btn.primary {
+    background: linear-gradient(120deg, rgba(0, 122, 255, 0.14), rgba(0, 200, 255, 0.08));
+    border-color: var(--color-border-primary);
+  }
+
+  .workout-status { font-size: 12px; color: var(--color-text-secondary); margin-left: auto; }
+
+  .guided-nav {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid var(--color-border-secondary);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+  }
+
+  .guided-nav.show { display: flex; }
+
+  .block-cue {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    z-index: 1250;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border-primary);
+    background: rgba(0, 122, 255, 0.12);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .block-cue.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .guided-arrow {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border-secondary);
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--color-text-primary);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .guided-arrow:hover {
+    transform: translateY(-1px);
+    background: rgba(0, 122, 255, 0.1);
+    border-color: var(--color-border-primary);
+  }
+
+  .guided-arrow:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  .tab {
+    position: relative;
+    padding: 6px 14px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: rgba(255, 255, 255, 0.45);
+    color: #222;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .tab:hover {
+    background: rgba(0, 122, 255, 0.08);
+    border-color: var(--color-border-primary);
+    transform: translateY(-1px);
+  }
+
+  .tab.active {
+    background: linear-gradient(120deg, rgba(0, 122, 255, 0.14), rgba(0, 200, 255, 0.08));
+    color: #111;
+    border-color: var(--color-border-primary);
+    font-weight: 600;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2f3a47;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 1.35rem 0 0.6rem;
+  }
+
+  .exercise-card {
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+  }
+
+  .exercise-card:hover {
+    border-color: var(--color-border-secondary);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.07);
+    transform: translateY(-1px);
+  }
+
+  .exercise-card.guided-current {
+    border-color: var(--color-border-primary);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.18), 0 8px 18px rgba(0, 0, 0, 0.08);
+  }
+
+  .ex-header { display: flex; align-items: center; gap: 10px; }
+
+  .ex-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-eccentric { background: #eeedfe; color: #3c3489; }
+  .badge-glute { background: #e1f5ee; color: #085041; }
+  .badge-stability { background: #faeeda; color: #633806; }
+  .badge-back { background: #faece7; color: #712b13; }
+  .badge-calf { background: #eaf3de; color: #27500a; }
+  .badge-core { background: #fdecf3; color: #7a1450; }
+  .badge-upper { background: #eaf3fb; color: #0b4a6f; }
+
+  .ex-name { font-size: 15px; font-weight: 600; color: var(--color-text-primary); flex: 1; }
+
+  .ex-prescription {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .workout-summary {
+    display: none;
+    margin-top: 1.6rem;
+    padding: 16px;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border-secondary);
+    background: var(--color-background-secondary);
+  }
+
+  .workout-summary.show { display: block; }
+
+  .summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  #summary-text {
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 12px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border-tertiary);
+    margin: 0;
+  }
+
+  .summary-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .timing-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+    margin-top: 1.6rem;
+  }
+
+  .timing-cell {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .timing-num { font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
+  .timing-lbl { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .plan { padding: 18px 14px; border-left-width: 3px; border-radius: 14px; font-size: 16px; line-height: 1.8; }
+    .plan.guided-active { padding-bottom: 170px; }
+    .plan:hover { transform: none; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+    .session-tabs { flex-direction: column; gap: 10px; margin-bottom: 1rem; }
+    .tab { width: 100%; padding: 12px 14px; font-size: 15px; line-height: 1.35; text-align: left; }
+    .workout-controls { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; margin-bottom: 0.9rem; }
+    .workout-btn { width: 100%; padding: 12px 14px; font-size: 15px; min-height: 48px; text-align: center; }
+    .workout-status { margin-left: 0; width: 100%; font-size: 13px; line-height: 1.4; text-align: center; }
+    .guided-nav { width: calc(100vw - 16px); max-width: 430px; justify-content: space-between; padding: 10px 12px; bottom: calc(env(safe-area-inset-bottom, 0px) + 8px); }
+    .guided-arrow { width: 60px; height: 60px; font-size: 24px; }
+    .block-cue { width: calc(100vw - 18px); max-width: 430px; top: calc(env(safe-area-inset-top, 0px) + 10px); padding: 10px 12px; font-size: 13px; text-align: center; line-height: 1.3; }
+    .section-title { font-size: 14px; margin: 1.1rem 0 0.5rem; letter-spacing: 0.04em; }
+    .exercise-card { padding: 14px 14px 13px; margin-bottom: 10px; border-radius: 16px; }
+    .exercise-card:hover { transform: none; box-shadow: none; }
+    .ex-header { align-items: flex-start; gap: 8px; }
+    .ex-name { font-size: 17px; line-height: 1.25; }
+    .ex-badge { font-size: 10px; padding: 3px 7px; margin-top: 2px; flex: 0 0 auto; }
+    .ex-prescription { margin-top: 8px; gap: 8px; flex-direction: column; align-items: flex-start; font-size: 14px; line-height: 1.4; }
+    .timing-bar { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1.2rem; }
+    .timing-cell { padding: 12px 10px; min-height: 78px; }
+    .timing-num { font-size: 20px; }
+    .timing-lbl { font-size: 12px; line-height: 1.25; }
+  }
+
+  @media (max-width: 480px) {
+    .plan { padding: 14px 12px; font-size: 16px; }
+    .guided-nav { width: calc(100vw - 12px); padding: 10px 10px; }
+    .guided-arrow { width: 56px; height: 56px; font-size: 22px; }
+    .block-cue { width: calc(100vw - 14px); font-size: 12px; }
+    .timing-bar { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-text-primary: #e8eaed;
+      --color-text-secondary: #b8bdc4;
+      --color-background-primary: rgba(25, 30, 38, 0.82);
+      --color-background-secondary: rgba(30, 35, 45, 0.76);
+      --color-border-primary: rgba(70, 130, 255, 0.45);
+      --color-border-secondary: rgba(70, 130, 255, 0.35);
+      --color-border-tertiary: rgba(70, 130, 255, 0.26);
+    }
+    .plan { background: rgba(25, 30, 38, 0.75); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
+    .tab { background: rgba(30, 35, 45, 0.7); color: #d0d4d9; }
+    .tab.active { background: linear-gradient(120deg, rgba(70, 130, 255, 0.2), rgba(50, 170, 255, 0.1)); color: #e8eaed; }
+    .workout-btn { background: rgba(30, 35, 45, 0.75); color: #e8eaed; }
+    .workout-btn.primary { background: linear-gradient(120deg, rgba(70, 130, 255, 0.24), rgba(50, 170, 255, 0.12)); }
+    .guided-nav { background: rgba(25, 30, 38, 0.85); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45); }
+    .guided-arrow { background: rgba(30, 35, 45, 0.95); color: #e8eaed; }
+    .block-cue { background: rgba(70, 130, 255, 0.2); color: #e8eaed; border-color: rgba(70, 130, 255, 0.45); }
+    #summary-text { background: rgba(255, 255, 255, 0.06); }
+  }
+</style>
+</head>
+<body>
+
+<div class="plan">
+  <h2 class="sr-only">Home strength reset set list — choose a session and work through the exercises one by one</h2>
+
+  <div class="session-tabs" role="tablist">
+    <button class="tab active" onclick="showSession(0)" role="tab">Session A &mdash; Lower Body</button>
+    <button class="tab" onclick="showSession(1)" role="tab">Session B &mdash; Upper Body + Core</button>
+    <button class="tab" onclick="showSession(2)" role="tab">Session C &mdash; Full Body + Carries</button>
+    <button class="tab" onclick="showSession(3)" role="tab">Session D &mdash; Mobility</button>
+  </div>
+
+  <div class="workout-controls">
+    <button id="start-workout" class="workout-btn primary" type="button" onclick="startWorkout()">Start workout</button>
+    <button id="prev-step" class="workout-btn" type="button" onclick="prevStep()" disabled>Previous</button>
+    <button id="repeat-step" class="workout-btn" type="button" onclick="repeatRound()" disabled>Repeat round</button>
+    <button id="next-step" class="workout-btn" type="button" onclick="nextStep()" disabled>Next</button>
+    <button id="end-workout" class="workout-btn" type="button" onclick="endWorkout()" disabled>End workout</button>
+    <span id="workout-status" class="workout-status">Guided mode off</span>
+  </div>
+
+  <div id="guided-nav" class="guided-nav" aria-hidden="true">
+    <button id="prev-fab" class="guided-arrow" type="button" onclick="prevStep()" aria-label="Previous exercise">&larr;</button>
+    <button id="repeat-fab" class="guided-arrow" type="button" onclick="repeatRound()" aria-label="Repeat this round">&#8635;</button>
+    <button id="next-fab" class="guided-arrow" type="button" onclick="nextStep()" aria-label="Next exercise">&rarr;</button>
+  </div>
+
+  <div id="block-cue" class="block-cue" aria-hidden="true"></div>
+
+  <!-- SESSION A — LOWER BODY -->
+  <div id="session-0">
+    <div class="section-title" data-rounds="1">Warm-up</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Leg Swings &amp; Hip Circles</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>10/side each</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Glute Bridge</span><span class="ex-badge badge-glute">glute</span></div>
+      <div class="ex-prescription"><span>10 reps</span><span>Bodyweight</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Superset 1 &middot; 3 rounds &middot; Rest 60s</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Goblet Squat</span><span class="ex-badge badge-eccentric">quad</span></div>
+      <div class="ex-prescription"><span>12 reps</span><span>8kg</span><span>Tempo 3-1-1</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Step-Up on bench</span><span class="ex-badge badge-eccentric">quad</span></div>
+      <div class="ex-prescription"><span>10/leg</span><span>5&ndash;8kg</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Superset 2 &middot; 3 rounds &middot; Rest 60s</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Reverse Lunge</span><span class="ex-badge badge-eccentric">quad</span></div>
+      <div class="ex-prescription"><span>10/leg</span><span>5&ndash;8kg</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Single-Leg RDL</span><span class="ex-badge badge-back">hinge</span></div>
+      <div class="ex-prescription"><span>10/leg</span><span>5kg</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Slow Step-Down &middot; 3 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Slow Step-Down</span><span class="ex-badge badge-eccentric">quad</span></div>
+      <div class="ex-prescription"><span>8/leg</span><span>Bodyweight</span><span>4&ndash;5s lowering</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Calf Raise &middot; 3 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Calf Raise</span><span class="ex-badge badge-calf">calf</span></div>
+      <div class="ex-prescription"><span>15 reps</span><span>8kg</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Finisher &middot; 3 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Dead Bug</span><span class="ex-badge badge-core">core</span></div>
+      <div class="ex-prescription"><span>10/side</span><span>Bodyweight</span></div>
+    </div>
+  </div>
+
+  <!-- SESSION B — UPPER BODY + CORE -->
+  <div id="session-1" style="display:none">
+    <div class="section-title" data-rounds="1">Warm-up</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Shoulder Circles, Cat-Cow, Thoracic Rotation</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>10 each</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Superset 1 &middot; 3 rounds &middot; Rest 60s</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Flat Bench Press</span><span class="ex-badge badge-upper">push</span></div>
+      <div class="ex-prescription"><span>12 reps</span><span>8kg</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Single-Arm Row (bench-supported)</span><span class="ex-badge badge-upper">pull</span></div>
+      <div class="ex-prescription"><span>12/side</span><span>8kg</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Superset 2 &middot; 3 rounds &middot; Rest 60s</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Shoulder Press</span><span class="ex-badge badge-upper">push</span></div>
+      <div class="ex-prescription"><span>12 reps</span><span>5kg</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Bent-Over Reverse Fly</span><span class="ex-badge badge-upper">pull</span></div>
+      <div class="ex-prescription"><span>15 reps</span><span>3kg</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Superset 3 &middot; 3 rounds &middot; Rest 45s</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Bicep Curl</span><span class="ex-badge badge-upper">arms</span></div>
+      <div class="ex-prescription"><span>12 reps</span><span>5kg</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Overhead Tricep Extension</span><span class="ex-badge badge-upper">arms</span></div>
+      <div class="ex-prescription"><span>12 reps</span><span>3&ndash;5kg</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Push-Up &middot; 3 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Push-Up (incline on bench if needed)</span><span class="ex-badge badge-upper">push</span></div>
+      <div class="ex-prescription"><span>AMRAP&minus;2</span><span>Bodyweight</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Core: Plank &middot; 3 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Plank</span><span class="ex-badge badge-core">core</span></div>
+      <div class="ex-prescription"><span>30&ndash;45s</span><span>Bodyweight</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="2">Core: Side Plank &middot; 2 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Side Plank</span><span class="ex-badge badge-core">core</span></div>
+      <div class="ex-prescription"><span>30s/side</span><span>Bodyweight</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Core: Bird Dog &middot; 3 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Bird Dog</span><span class="ex-badge badge-core">core</span></div>
+      <div class="ex-prescription"><span>10/side</span><span>Bodyweight</span></div>
+    </div>
+  </div>
+
+  <!-- SESSION C — FULL BODY + CARRIES -->
+  <div id="session-2" style="display:none">
+    <div class="section-title" data-rounds="1">Warm-up</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Hip Hinge Drill &amp; Glute Bridge</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>10 each</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Superset 1 &middot; 3 rounds &middot; Rest 75s</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Romanian Deadlift</span><span class="ex-badge badge-back">hinge</span></div>
+      <div class="ex-prescription"><span>12 reps</span><span>8kg</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Bulgarian Split Squat (bench)</span><span class="ex-badge badge-eccentric">quad</span></div>
+      <div class="ex-prescription"><span>8&ndash;10/leg</span><span>5&ndash;8kg</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Superset 2 &middot; 3 rounds &middot; Rest 60s</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Glute Bridge / Hip Thrust (bench)</span><span class="ex-badge badge-glute">glute</span></div>
+      <div class="ex-prescription"><span>15 reps</span><span>8kg</span></div>
+    </div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Suitcase March in place</span><span class="ex-badge badge-core">anti-lateral</span></div>
+      <div class="ex-prescription"><span>40s/side</span><span>8kg &mdash; switch sides each round</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="3">Pallof Press &middot; 3 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Pallof Press iso hold</span><span class="ex-badge badge-core">anti-rotation</span></div>
+      <div class="ex-prescription"><span>20s/side</span><span>8kg</span></div>
+    </div>
+  </div>
+
+  <!-- SESSION D — MOBILITY -->
+  <div id="session-3" style="display:none">
+    <div class="section-title" data-rounds="1">1. Cat-Cow &rarr; Child's Pose</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Cat-Cow &rarr; Child's Pose</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>10 reps + 30s hold</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="2">2. Hip Flexor Stretch &middot; 2 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Hip Flexor Stretch (couch or half-kneeling)</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>60s/side</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="1">3. Hamstring Stretch</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Hamstring Stretch</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>60s/side</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="2">4. Thoracic Rotation &middot; 2 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Thoracic Rotation (open book)</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>10/side</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="2">5. Ankle Mobility &middot; 2 sets</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Ankle Mobility (rocking dorsiflexion)</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>10/side</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="1">6. Calf Stretch</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Calf Stretch</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>30s/side</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="1">7. Supine Spinal Twist</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Supine Spinal Twist</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>45s/side</span></div>
+    </div>
+
+    <div class="section-title" data-rounds="1">8. Cooldown Breathing</div>
+    <div class="exercise-card" onclick="cardClick(this)">
+      <div class="ex-header"><span class="ex-name">Lie flat, slow breathing</span><span class="ex-badge badge-stability">mobility</span></div>
+      <div class="ex-prescription"><span>2 min</span></div>
+    </div>
+  </div>
+
+  <div id="workout-summary" class="workout-summary" aria-hidden="true">
+    <div class="summary-header">
+      <span>Workout logged</span>
+      <button class="workout-btn" type="button" onclick="hideSummaryPanel()">Close</button>
+    </div>
+    <pre id="summary-text"></pre>
+    <div class="summary-actions">
+      <button class="workout-btn primary" type="button" onclick="copyAgain()">Copy again</button>
+      <span id="copy-status" class="workout-status"></span>
+    </div>
+  </div>
+
+  <!-- <div class="timing-bar">
+    <div class="timing-cell"><div class="timing-num">4</div><div class="timing-lbl">Sessions in rotation</div></div>
+    <div class="timing-cell"><div class="timing-num">3&ndash;4&times;</div><div class="timing-lbl">Per week</div></div>
+    <div class="timing-cell"><div class="timing-num">A&rarr;B&rarr;C&rarr;D</div><div class="timing-lbl">Suggested order</div></div>
+    <div class="timing-cell"><div class="timing-num">3&ndash;8kg</div><div class="timing-lbl">Dumbbells used</div></div>
+  </div> -->
+</div>
+
+<script>
+const guided = {
+  active: false,
+  steps: [],
+  index: 0,
+  currentCard: null,
+  cueTimer: null
+};
+
+let lastSummaryText = '';
+
+const SESSION_NAMES = [
+  'Session A — Lower Body (Quad & Knee Resilience)',
+  'Session B — Upper Body + Core',
+  'Session C — Full Body (Posterior Chain & Carries)',
+  'Session D — Mobility'
+];
+
+function getPlanEl() {
+  return document.querySelector('.plan');
+}
+
+function mountFloatingUiToBody() {
+  const nav = document.getElementById('guided-nav');
+  if (nav && nav.parentElement !== document.body) document.body.appendChild(nav);
+
+  const cue = document.getElementById('block-cue');
+  if (cue && cue.parentElement !== document.body) document.body.appendChild(cue);
+}
+
+function showBlockCue(text) {
+  const cue = document.getElementById('block-cue');
+  if (!cue) return;
+
+  if (guided.cueTimer) {
+    clearTimeout(guided.cueTimer);
+    guided.cueTimer = null;
+  }
+
+  cue.textContent = 'Now: ' + text;
+  cue.classList.add('show');
+  cue.setAttribute('aria-hidden', 'false');
+
+  guided.cueTimer = setTimeout(() => {
+    cue.classList.remove('show');
+    cue.setAttribute('aria-hidden', 'true');
+    guided.cueTimer = null;
+  }, 1800);
+}
+
+function isLastGuidedStep() {
+  return guided.active && guided.steps.length > 0 && guided.index >= guided.steps.length - 1;
+}
+
+function getCurrentSessionIndex() {
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  return Math.max(0, tabs.findIndex(t => t.classList.contains('active')));
+}
+
+function parseSessionBlocks(sessionIndex) {
+  const session = document.getElementById('session-' + sessionIndex);
+  if (!session) return [];
+
+  const blocks = [];
+  let current = null;
+
+  Array.from(session.children).forEach((el) => {
+    if (el.classList && el.classList.contains('section-title')) {
+      current = {
+        title: el.textContent.trim(),
+        rounds: parseInt(el.dataset.rounds || '1', 10),
+        cards: []
+      };
+      blocks.push(current);
+      return;
+    }
+    if (el.classList && el.classList.contains('exercise-card') && current) {
+      current.cards.push(el);
+    }
+  });
+
+  return blocks;
+}
+
+function buildGuidedSteps(sessionIndex) {
+  const blocks = parseSessionBlocks(sessionIndex);
+  const steps = [];
+
+  blocks.forEach((block) => {
+    for (let round = 1; round <= block.rounds; round += 1) {
+      block.cards.forEach((card, exIndex) => {
+        steps.push({
+          card,
+          blockTitle: block.title,
+          round,
+          rounds: block.rounds,
+          exercise: exIndex + 1,
+          exerciseTotal: block.cards.length
+        });
+      });
+    }
+  });
+
+  return steps;
+}
+
+function setGuidedStatus(text) {
+  const status = document.getElementById('workout-status');
+  if (status) status.textContent = text;
+}
+
+function updateGuidedButtons() {
+  const startBtn = document.getElementById('start-workout');
+  const nextBtn = document.getElementById('next-step');
+  const prevBtn = document.getElementById('prev-step');
+  const repeatBtn = document.getElementById('repeat-step');
+  const endBtn = document.getElementById('end-workout');
+  const prevFab = document.getElementById('prev-fab');
+  const repeatFab = document.getElementById('repeat-fab');
+  const nextFab = document.getElementById('next-fab');
+  const nav = document.getElementById('guided-nav');
+
+  const hasPrev = guided.active && guided.index > 0;
+  const lastStep = isLastGuidedStep();
+  const hasNext = guided.active;
+
+  if (startBtn) startBtn.disabled = guided.active;
+  if (nextBtn) {
+    nextBtn.disabled = !guided.active || !hasNext;
+    nextBtn.innerHTML = lastStep ? 'Finish workout &#x1F3C1;' : 'Next';
+  }
+  if (prevBtn) prevBtn.disabled = !guided.active || !hasPrev;
+  if (repeatBtn) repeatBtn.disabled = !guided.active;
+  if (endBtn) endBtn.disabled = !guided.active;
+  if (prevFab) prevFab.disabled = !hasPrev;
+  if (repeatFab) repeatFab.disabled = !guided.active;
+  if (nextFab) {
+    nextFab.disabled = !hasNext;
+    nextFab.innerHTML = lastStep ? '&#x1F3C1;' : '&rarr;';
+    nextFab.setAttribute('aria-label', lastStep ? 'Finish workout' : 'Next exercise');
+  }
+  if (nav) {
+    nav.classList.toggle('show', guided.active);
+    nav.setAttribute('aria-hidden', guided.active ? 'false' : 'true');
+  }
+}
+
+function clearGuidedFocus() {
+  if (guided.currentCard) {
+    guided.currentCard.classList.remove('guided-current');
+    guided.currentCard = null;
+  }
+}
+
+function renderGuidedStep() {
+  if (!guided.active) return;
+
+  if (guided.index >= guided.steps.length) {
+    finishWorkout();
+    return;
+  }
+  if (guided.index < 0) guided.index = 0;
+
+  clearGuidedFocus();
+
+  const step = guided.steps[guided.index];
+  const total = guided.steps.length;
+  const prev = guided.index > 0 ? guided.steps[guided.index - 1] : null;
+
+  if (!prev || prev.blockTitle !== step.blockTitle) {
+    showBlockCue(step.blockTitle);
+  }
+
+  guided.currentCard = step.card;
+  step.card.classList.add('guided-current');
+  step.card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  setGuidedStatus(
+    step.blockTitle + '  |  Round ' + step.round + '/' + step.rounds + '  |  Exercise ' +
+    step.exercise + '/' + step.exerciseTotal + '  |  Step ' + (guided.index + 1) + '/' + total
+  );
+
+  updateGuidedButtons();
+}
+
+function startWorkout() {
+  const sessionIndex = getCurrentSessionIndex();
+  guided.steps = buildGuidedSteps(sessionIndex);
+  guided.index = 0;
+
+  if (!guided.steps.length) {
+    setGuidedStatus('No exercises found for this session');
+    return;
+  }
+
+  hideSummaryPanel();
+  guided.active = true;
+  const plan = getPlanEl();
+  if (plan) plan.classList.add('guided-active');
+  updateGuidedButtons();
+  renderGuidedStep();
+}
+
+function nextStep() {
+  if (!guided.active) return;
+  if (guided.index >= guided.steps.length - 1) {
+    finishWorkout();
+    return;
+  }
+  guided.index += 1;
+  renderGuidedStep();
+}
+
+function prevStep() {
+  if (!guided.active) return;
+  if (guided.index <= 0) return;
+  guided.index -= 1;
+  renderGuidedStep();
+}
+
+function repeatRound() {
+  if (!guided.active) return;
+  const current = guided.steps[guided.index];
+  if (!current) return;
+
+  let i = guided.index;
+  while (i > 0 && guided.steps[i - 1].blockTitle === current.blockTitle && guided.steps[i - 1].round === current.round) {
+    i -= 1;
+  }
+  guided.index = i;
+  renderGuidedStep();
+}
+
+function endWorkout() {
+  clearGuidedFocus();
+  if (guided.cueTimer) {
+    clearTimeout(guided.cueTimer);
+    guided.cueTimer = null;
+  }
+  const cue = document.getElementById('block-cue');
+  if (cue) {
+    cue.classList.remove('show');
+    cue.setAttribute('aria-hidden', 'true');
+  }
+  guided.active = false;
+  guided.steps = [];
+  guided.index = 0;
+  const plan = getPlanEl();
+  if (plan) plan.classList.remove('guided-active');
+  updateGuidedButtons();
+  setGuidedStatus('Guided mode off');
+}
+
+function generateSummary(sessionIndex) {
+  const blocks = parseSessionBlocks(sessionIndex);
+  const lines = [];
+  lines.push('Home Strength — ' + (SESSION_NAMES[sessionIndex] || ('Session ' + (sessionIndex + 1))));
+  lines.push(new Date().toLocaleDateString());
+  lines.push('');
+
+  blocks.forEach((block) => {
+    const items = block.cards.map((card) => {
+      const name = card.querySelector('.ex-name').textContent.trim();
+      const presc = Array.from(card.querySelectorAll('.ex-prescription span'))
+        .map(s => s.textContent.trim())
+        .join(' ');
+      return name + ' ' + presc;
+    });
+
+    if (block.cards.length > 1) {
+      lines.push(block.title + ': ' + items.join('  +  '));
+    } else if (items.length) {
+      lines.push(items[0]);
+    }
+  });
+
+  return lines.join('\n');
+}
+
+function copyToClipboard(text) {
+  const statusEl = document.getElementById('copy-status');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (statusEl) statusEl.textContent = 'Copied to clipboard';
+    }).catch(() => {
+      if (statusEl) statusEl.textContent = 'Could not auto-copy — copy manually below';
+    });
+  } else if (statusEl) {
+    statusEl.textContent = 'Copy manually below';
+  }
+}
+
+function showSummaryPanel(text) {
+  lastSummaryText = text;
+  const panel = document.getElementById('workout-summary');
+  const pre = document.getElementById('summary-text');
+  if (pre) pre.textContent = text;
+  if (panel) {
+    panel.classList.add('show');
+    panel.setAttribute('aria-hidden', 'false');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function hideSummaryPanel() {
+  const panel = document.getElementById('workout-summary');
+  if (panel) {
+    panel.classList.remove('show');
+    panel.setAttribute('aria-hidden', 'true');
+  }
+  const statusEl = document.getElementById('copy-status');
+  if (statusEl) statusEl.textContent = '';
+}
+
+function copyAgain() {
+  copyToClipboard(lastSummaryText);
+}
+
+function finishWorkout() {
+  const sessionIndex = getCurrentSessionIndex();
+  const summary = generateSummary(sessionIndex);
+  showSummaryPanel(summary);
+  copyToClipboard(summary);
+  endWorkout();
+}
+
+function showSession(i) {
+  if (guided.active) endWorkout();
+  hideSummaryPanel();
+  [0, 1, 2, 3].forEach((n) => {
+    const el = document.getElementById('session-' + n);
+    if (el) el.style.display = n === i ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((t, n) => t.classList.toggle('active', n === i));
+}
+
+function cardClick(card) {
+  if (guided.active && guided.currentCard === card) {
+    nextStep();
+  }
+}
+
+mountFloatingUiToBody();
+updateGuidedButtons();
+</script>
+
+</body>
+</html>
